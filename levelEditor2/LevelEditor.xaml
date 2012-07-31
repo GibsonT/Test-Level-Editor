@@ -1,0 +1,54 @@
+﻿<Window x:Class="levelEditor2.LevelEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:levelEditor2"
+        Title="MainWindow" Height="350" Width="525">
+    <Window.DataContext>
+        <local:LevelEditorViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <local:StringIntConverter x:Key="stringIntConverter" />
+        <local:TileManager x:Key="tileManager" />
+    </Window.Resources>
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Export" Command="{Binding ExportCommand}" />
+                <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
+            </MenuItem>
+        </Menu>
+        <TabControl DockPanel.Dock="Left">
+            <TabItem Header="Structurals">
+                <DockPanel>
+                    <Button DockPanel.Dock="Top" Content="Add Structural" Command="{Binding AddStructuralItemCommand}" />
+                    <ListBox ItemsSource="{Binding Source={StaticResource tileManager}, Path=StructuralItems}" 
+                             SelectedItem="{Binding Source={StaticResource tileManager}, Path=SelectedTile}" 
+                             SelectionChanged="ListBox_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Image}" MaxHeight="100" MaxWidth="100" HorizontalAlignment="Left"/>
+                                    <Label Content="{Binding TextureKey}" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Actors" />
+            <TabItem Header="Controllers" />
+            <TabItem Header="Map Properties">
+                <StackPanel>
+                    <TextBox Name="rowTextBox" 
+                             Text="{Binding ElementName=tileGrid, Path=NumberOfRows, Converter={StaticResource stringIntConverter}, Mode=TwoWay}"/>
+                    <TextBox Name="columnTextBox" 
+                             Text="{Binding ElementName=tileGrid, Path=NumberOfColumns, Converter={StaticResource stringIntConverter}, Mode=TwoWay}"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <local:TileGrid x:Name="tileGrid"/>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
